@@ -56,12 +56,6 @@ Track your learning journey month-by-month with progress bars, checklists, and a
 
 ---
 
-## 📸 Preview
-
-> _(You can add a screenshot or screen recording here!)_
-
----
-
 ## 🔒 Local-Only — Private by Default
 
 No data is stored online. Everything is in your browser memory (or can be made persistent with `localStorage`).
