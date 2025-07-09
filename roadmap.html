@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Sabrina's Learning Roadmap 🌙</title>
+  <style>
+    :root {
+      --bg: #0e0d0d;
+      --accent: #8b0000;
+      --card-bg: #1a1717;
+      --text: #f9f5f2;
+      --highlight: #f0c987;
+      --tag: #e06c75;
+      --check: #98c379;
+      --pillar: #c678dd;
+      --goal: #61afef;
+      --progress: #56b6c2;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    h1 {
+      text-align: center;
+      color: var(--accent);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .progress-dashboard {
+      background: #141212;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      border: 2px solid var(--progress);
+    }
+    .progress-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid var(--progress);
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--progress);
+    }
+    .stat-label {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .timeline-chart {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+    .timeline-months {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+    }
+    .month-bar {
+      height: 40px;
+      background: #333;
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+    .month-progress {
+      height: 100%;
+      background: linear-gradient(45deg, var(--progress), var(--highlight));
+      border-radius: 5px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .month-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      z-index: 1;
+    }
+    
+    .export-section {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .export-btn {
+      background: var(--accent);
+      color: var(--text);
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .export-btn:hover {
+      background: #a50000;
+      transform: translateY(-2px);
+    }
+    
+    .goal-section {
+      background: #141212;
+      padding: 1.5rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      border: 2px solid var(--accent);
+    }
+    .goal-section h2 {
+      color: var(--goal);
+      margin-top: 0;
+      text-align: center;
+    }
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .pillar-card {
+      background: #141212;
+      padding: 1.5rem;
+      border-radius: 15px;
+      border-left: 6px solid var(--pillar);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+    .pillar-card:hover {
+      transform: translateY(-3px);
+    }
+    .pillar-card h3 {
+      color: var(--pillar);
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    
+    .notes-section {
+      background: #1f1b1b;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+      border-left: 4px solid var(--highlight);
+    }
+    .notes-textarea {
+      width: 100%;
+      background: #141212;
+      color: var(--text);
+      border: 1px solid #555;
+      border-radius: 5px;
+      padding: 0.8rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 80px;
+    }
+    .notes-textarea:focus {
+      outline: none;
+      border-color: var(--highlight);
+    }
+    
+    h2 {
+      margin-top: 2rem;
+      color: var(--highlight);
+      border-left: 6px solid var(--accent);
+      padding-left: 0.5rem;
+    }
+    ul {
+      list-style: none;
+      padding-left: 1rem;
+    }
+    li {
+      background: #141212;
+      margin-bottom: 0.7rem;
+      padding: 1rem;
+      border-left: 5px solid var(--accent);
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+    
+    .task-checkbox {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--check);
+    }
+    .task-content {
+      flex: 1;
+    }
+    .task-content.completed {
+      text-decoration: line-through;
+      opacity: 0.7;
+      color: var(--check);
+    }
+    
+    .tag {
+      background: var(--tag);
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+      margin-left: 0.5rem;
+    }
+    .tag.security { background: #e74c3c; }
+    .tag.systems { background: #3498db; }
+    .tag.testing { background: #27ae60; }
+    .tag.devops { background: #f39c12; }
+    .tag.ml { background: #9b59b6; }
+    .tag.fun { background: #e91e63; }
+    .month {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    .check {
+      color: var(--check);
+      font-weight: bold;
+    }
+    .why-section {
+      background: #1f1b1b;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+      border-left: 4px solid var(--highlight);
+    }
+    .why-section strong {
+      color: var(--highlight);
+    }
+    .summary-table {
+      background: #141212;
+      padding: 1.5rem;
+      border-radius: 15px;
+      margin: 2rem 0;
+      overflow-x: auto;
+    }
+    .summary-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .summary-table th, .summary-table td {
+      padding: 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #555;
+    }
+    .summary-table th {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .month-section {
+      background: #141212;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      border: 2px solid var(--highlight);
+    }
+    .month-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .month-progress-badge {
+      background: var(--progress);
+      color: var(--bg);
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    @media print {
+      .export-section, .notes-section { display: none; }
+      body { background: white; color: black; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌙 Sabrina's Strategic Learning Roadmap</h1>
+    
+    <!-- Progress Dashboard -->
+    <div class="progress-dashboard">
+      <h2 style="margin-top: 0; border: none; padding: 0; color: var(--progress); text-align: center;">📊 Progress Dashboard</h2>
+      <div class="progress-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="totalTasks">0</div>
+          <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="completedTasks">0</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="overallProgress">0%</div>
+          <div class="stat-label">Overall Progress</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="currentMonth">Month 1</div>
+          <div class="stat-label">Current Focus</div>
+        </div>
+      </div>
+      
+      <!-- Timeline Chart -->
+      <div class="timeline-chart">
+        <h3 style="margin-top: 0; color: var(--progress); text-align: center;">🗓️ 6-Month Timeline</h3>
+        <div class="timeline-months">
+          <div class="month-bar" data-month="1">
+            <div class="month-progress" id="progress-month-1"></div>
+            <div class="month-label">M1</div>
+          </div>
+          <div class="month-bar" data-month="2">
+            <div class="month-progress" id="progress-month-2"></div>
+            <div class="month-label">M2</div>
+          </div>
+          <div class="month-bar" data-month="3">
+            <div class="month-progress" id="progress-month-3"></div>
+            <div class="month-label">M3</div>
+          </div>
+          <div class="month-bar" data-month="4">
+            <div class="month-progress" id="progress-month-4"></div>
+            <div class="month-label">M4</div>
+          </div>
+          <div class="month-bar" data-month="5">
+            <div class="month-progress" id="progress-month-5"></div>
+            <div class="month-label">M5</div>
+          </div>
+          <div class="month-bar" data-month="6">
+            <div class="month-progress" id="progress-month-6"></div>
+            <div class="month-label">M6</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Export Section -->
+    <div class="export-section">
+      <button class="export-btn" onclick="exportToPDF()">📄 Export Progress as PDF</button>
+    </div>
+    
+    <div class="goal-section">
+      <h2>🧠 THE GOAL</h2>
+      <p><strong>Become a well-rounded software engineer</strong> who's employable anywhere, can build production-grade apps, and who <em>genuinely</em> understands the systems they work with.</p>
+      <p>You need more than just frameworks and languages. You need <strong>systems knowledge</strong>, <strong>problem-solving ability</strong>, and <strong>architecture intuition</strong>.</p>
+    </div>
+
+    <h2>🧱 LEVEL-UP PILLARS</h2>
+    <div class="pillars">
+      <div class="pillar-card">
+        <h3>🧩 Problem Solving & Algorithms</h3>
+        <p>Train your brain to think in edge cases and optimize code.</p>
+        <ul style="padding-left: 0; margin-top: 1rem;">
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• Data structures (arrays, trees, graphs, heaps)</li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• Algorithms (DFS/BFS, dynamic programming)</li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://neetcode.io/" target="_blank" style="color: var(--highlight);">NeetCode.io</a>, <a href="https://leetcode.com/" target="_blank" style="color: var(--highlight);">LeetCode</a>, <a href="https://cs50.harvard.edu/x/" target="_blank" style="color: var(--highlight);">CS50</a></li>
+        </ul>
+        <div class="why-section">
+          <strong>Why?</strong> Because one day you'll debug something nasty, and these mental tools will save you.
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <h3>🔧 Systems Design</h3>
+        <p>Learn how real apps are architected.</p>
+        <ul style="padding-left: 0; margin-top: 1rem;">
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• Load balancers, queues, caching layers</li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• Database sharding, replication</li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://github.com/donnemartin/system-design-primer" target="_blank" style="color: var(--highlight);">System Design Primer</a>, <a href="https://www.youtube.com/c/ByteByteGo" target="_blank" style="color: var(--highlight);">ByteByteGo</a></li>
+        </ul>
+        <div class="why-section">
+          <strong>Why?</strong> You'll be the dev who actually understands why we're adding Redis or splitting a service.
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <h3>📦 Testing & Quality</h3>
+        <p>Break things safely and ship faster.</p>
+        <ul style="padding-left: 0; margin-top: 1rem;">
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://jestjs.io/" target="_blank" style="color: var(--highlight);">Jest</a>, <a href="https://vitest.dev/" target="_blank" style="color: var(--highlight);">Vitest</a>, <a href="https://docs.pytest.org/" target="_blank" style="color: var(--highlight);">Pytest</a></li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://playwright.dev/" target="_blank" style="color: var(--highlight);">Playwright</a>, <a href="https://www.cypress.io/" target="_blank" style="color: var(--highlight);">Cypress</a> for E2E</li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• Test coverage, mocking, TDD</li>
+        </ul>
+        <div class="why-section">
+          <strong>Why?</strong> Great devs break things safely and ship faster because they test better.
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <h3>🧠 DevOps & Infrastructure</h3>
+        <p>Understand how code gets to production.</p>
+        <ul style="padding-left: 0; margin-top: 1rem;">
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://docs.docker.com/" target="_blank" style="color: var(--highlight);">Docker</a> + <a href="https://docs.github.com/en/actions" target="_blank" style="color: var(--highlight);">GitHub Actions</a></li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://kubernetes.io/docs/home/" target="_blank" style="color: var(--highlight);">Kubernetes</a> basics</li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://aws.amazon.com/getting-started/" target="_blank" style="color: var(--highlight);">AWS</a>/<a href="https://cloud.google.com/docs" target="_blank" style="color: var(--highlight);">GCP</a>, <a href="https://vercel.com/docs" target="_blank" style="color: var(--highlight);">Vercel</a></li>
+        </ul>
+        <div class="why-section">
+          <strong>Why?</strong> Because it's 2025 and engineers who don't understand how their code gets to prod are becoming obsolete.
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <h3>🔐 Security Engineering</h3>
+        <p>Go deeper than OWASP Top 10.</p>
+        <ul style="padding-left: 0; margin-top: 1rem;">
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://owasp.org/www-project-top-ten/" target="_blank" style="color: var(--highlight);">OWASP Top 10</a> + advanced patterns</li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://portswigger.net/web-security" target="_blank" style="color: var(--highlight);">Web Security Academy</a></li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://cheatsheetseries.owasp.org/" target="_blank" style="color: var(--highlight);">OWASP Cheat Sheets</a></li>
+        </ul>
+        <div class="why-section">
+          <strong>Why?</strong> Security isn't optional. It's your job now.
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <h3>🧠 Machine Learning / AI</h3>
+        <p>Build smart features into apps.</p>
+        <ul style="padding-left: 0; margin-top: 1rem;">
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://numpy.org/" target="_blank" style="color: var(--highlight);">NumPy</a>, <a href="https://pandas.pydata.org/" target="_blank" style="color: var(--highlight);">Pandas</a>, <a href="https://scikit-learn.org/" target="_blank" style="color: var(--highlight);">Scikit-learn</a></li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://huggingface.co/" target="_blank" style="color: var(--highlight);">Hugging Face</a>, <a href="https://langchain.readthedocs.io/" target="_blank" style="color: var(--highlight);">LangChain</a></li>
+          <li style="background: transparent; border: none; padding: 0.3rem 0; margin-bottom: 0.3rem;">• <a href="https://www.kaggle.com/learn" target="_blank" style="color: var(--highlight);">Kaggle Learn</a>, <a href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank" style="color: var(--highlight);">ML Coursera</a></li>
+        </ul>
+        <div class="why-section">
+          <strong>Why?</strong> Add intelligent features and stay relevant in the AI era.
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-table">
+      <h2 style="margin-top: 0; border: none; padding: 0; color: var(--accent);">🔥 Enhanced Growth Plan Summary</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pillar</th>
+            <th>Goals</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🧩 Problem Solving</td>
+            <td>2–3 hours/week of DS/Algo training</td>
+          </tr>
+          <tr>
+            <td>🔧 Systems Design</td>
+            <td>Watch 1–2 ByteByteGo/week, take notes</td>
+          </tr>
+          <tr>
+            <td>📦 Testing</td>
+            <td>Add tests to every new feature</td>
+          </tr>
+          <tr>
+            <td>🧠 DevOps & CI/CD</td>
+            <td>Dockerize all projects, learn GitHub Actions</td>
+          </tr>
+          <tr>
+            <td>🔐 Security</td>
+            <td>Do one mini security audit per month</td>
+          </tr>
+          <tr>
+            <td>🧠 ML/AI</td>
+            <td>One ML side project or course</td>
+          </tr>
+          <tr>
+            <td>🛠️ Big Projects</td>
+            <td>Build and maintain a SaaS, mobile app, or tool</td>
+          </tr>
+          <tr>
+            <td>🔍 Open Source</td>
+            <td>Contribute to OSS, read architecture blogs</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="month-section">
+      <div class="month-header">
+        <h2 style="margin: 0; border: none; padding: 0;">🌱 Month 1: Foundation & Problem Solving</h2>
+        <div class="month-progress-badge" id="month-1-badge">0% Complete</div>
+      </div>
+      <ul>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="1" id="task-1-1">
+          <div class="task-content">
+            <span class="check">✔</span> Learn JWT, OAuth2, and implement RBAC <span class="tag security">Security</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="1" id="task-1-2">
+          <div class="task-content">
+            <span class="check">✔</span> PostgreSQL + Prisma migrations
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="1" id="task-1-3">
+          <div class="task-content">
+            Redis for caching and background jobs
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="1" id="task-1-4">
+          <div class="task-content">
+            <a href="https://docs.docker.com/get-started/" target="_blank" style="color: var(--highlight);">Docker</a> + <a href="https://docs.github.com/en/actions/quickstart" target="_blank" style="color: var(--highlight);">GitHub Actions</a> CI/CD pipeline <span class="tag devops">DevOps</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="1" id="task-1-5">
+          <div class="task-content">
+            Start <a href="https://neetcode.io/roadmap" target="_blank" style="color: var(--highlight);">DS/Algo practice</a> (2-3 hours/week) <span class="tag">Problem Solving</span>
+          </div>
+        </li>
+      </ul>
+      <div class="notes-section">
+        <h4 style="color: var(--highlight); margin-top: 0;">📝 Month 1 Reflection</h4>
+        <textarea class="notes-textarea" placeholder="How did Month 1 go? What surprised you? What was challenging? Key takeaways..." data-month="1"></textarea>
+      </div>
+    </div>
+
+    <div class="month-section">
+      <div class="month-header">
+        <h2 style="margin: 0; border: none; padding: 0;">⚙️ Month 2: Architecture & Security Deep Dive</h2>
+        <div class="month-progress-badge" id="month-2-badge">0% Complete</div>
+      </div>
+      <ul>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="2" id="task-2-1">
+          <div class="task-content">
+            <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" target="_blank" style="color: var(--highlight);">Clean Architecture</a> + <a href="https://www.digitalocean.com/community/conceptual_articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design" target="_blank" style="color: var(--highlight);">SOLID principles</a> <span class="tag systems">Systems</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="2" id="task-2-2">
+          <div class="task-content">
+            <a href="https://owasp.org/www-project-top-ten/" target="_blank" style="color: var(--highlight);">OWASP top 10</a> + advanced security patterns <span class="tag security">Security</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="2" id="task-2-3">
+          <div class="task-content">
+            <a href="https://portswigger.net/web-security" target="_blank" style="color: var(--highlight);">Web Security Academy</a> - XSS, CSRF, SQLi prevention
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="2" id="task-2-4">
+          <div class="task-content">
+            <a href="https://auth0.com/blog/a-look-at-the-latest-draft-for-oauth-2-security-best-current-practice/" target="_blank" style="color: var(--highlight);">Secure login flows</a> and token storage best practices
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="2" id="task-2-5">
+          <div class="task-content">
+            <a href="https://github.com/donnemartin/system-design-primer" target="_blank" style="color: var(--highlight);">Systems design</a> fundamentals (load balancers, caching) <span class="tag systems">Systems</span>
+          </div>
+        </li>
+      </ul>
+      <div class="notes-section">
+        <h4 style="color: var(--highlight); margin-top: 0;">📝 Month 2 Reflection</h4>
+        <textarea class="notes-textarea" placeholder="How did Month 2 go? What surprised you? What was challenging? Key takeaways..." data-month="2"></textarea>
+      </div>
+    </div>
+
+    <div class="month-section">
+      <div class="month-header">
+        <h2 style="margin: 0; border: none; padding: 0;">🧠 Month 3: ML/AI & Testing Mastery</h2>
+        <div class="month-progress-badge" id="month-3-badge">0% Complete</div>
+      </div>
+      <ul>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="3" id="task-3-1">
+          <div class="task-content">
+            <a href="https://numpy.org/learn/" target="_blank" style="color: var(--highlight);">Python for ML</a> (NumPy, Pandas) <span class="tag ml">ML</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="3" id="task-3-2">
+          <div class="task-content">
+            Build your first ML model with <a href="https://scikit-learn.org/stable/tutorial/basic/tutorial.html" target="_blank" style="color: var(--highlight);">scikit-learn</a> <span class="tag ml">ML</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="3" id="task-3-3">
+          <div class="task-content">
+            Unit testing with <a href="https://jestjs.io/docs/getting-started" target="_blank" style="color: var(--highlight);">Jest</a>/<a href="https://vitest.dev/guide/" target="_blank" style="color: var(--highlight);">Vitest</a> <span class="tag testing">Testing</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="3" id="task-3-4">
+          <div class="task-content">
+            Integration & E2E tests with <a href="https://playwright.dev/docs/intro" target="_blank" style="color: var(--highlight);">Playwright</a> <span class="tag testing">Testing</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="3" id="task-3-5">
+          <div class="task-content">
+            Try building a <a href="https://huggingface.co/docs/transformers/tasks/sentiment_analysis" target="_blank" style="color: var(--highlight);">sentiment analysis API</a> <span class="tag ml">ML</span>
+          </div>
+        </li>
+      </ul>
+      <div class="notes-section">
+        <h4 style="color: var(--highlight); margin-top: 0;">📝 Month 3 Reflection</h4>
+        <textarea class="notes-textarea" placeholder="How did Month 3 go? What surprised you? What was challenging? Key takeaways..." data-month="3"></textarea>
+      </div>
+    </div>
+
+    <div class="month-section">
+      <div class="month-header">
+        <h2 style="margin: 0; border: none; padding: 0;">🎨 Month 4: Advanced Frontend & DevOps</h2>
+        <div class="month-progress-badge" id="month-4-badge">0% Complete</div>
+      </div>
+      <ul>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="4" id="task-4-1">
+          <div class="task-content">
+            <a href="https://www.framer.com/motion/" target="_blank" style="color: var(--highlight);">Framer Motion</a> + advanced animations
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="4" id="task-4-2">
+          <div class="task-content">
+            <a href="https://web.dev/accessibility/" target="_blank" style="color: var(--highlight);">Accessibility (a11y)</a> and <a href="https://storybook.js.org/" target="_blank" style="color: var(--highlight);">design systems</a>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="4" id="task-4-3">
+          <div class="task-content">
+            <a href="https://kubernetes.io/docs/tutorials/kubernetes-basics/" target="_blank" style="color: var(--highlight);">Kubernetes basics</a> <span class="tag devops">DevOps</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="4" id="task-4-4">
+          <div class="task-content">
+            <a href="https://aws.amazon.com/getting-started/" target="_blank" style="color: var(--highlight);">AWS</a>/<a href="https://cloud.google.com/docs/get-started" target="_blank" style="color: var(--highlight);">GCP</a> fundamentals <span class="tag devops">DevOps</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="4" id="task-4-5">
+          <div class="task-content">
+            <a href="https://web.dev/performance/" target="_blank" style="color: var(--highlight);">Performance optimization</a> & <a href="https://www.datadoghq.com/blog/monitoring-101-collecting-data/" target="_blank" style="color: var(--highlight);">monitoring</a>
+          </div>
+        </li>
+      </ul>
+      <div class="notes-section">
+        <h4 style="color: var(--highlight); margin-top: 0;">📝 Month 4 Reflection</h4>
+        <textarea class="notes-textarea" placeholder="How did Month 4 go? What surprised you? What was challenging? Key takeaways..." data-month="4"></textarea>
+      </div>
+    </div>
+
+    <div class="month-section">
+      <div class="month-header">
+        <h2 style="margin: 0; border: none; padding: 0;">🚀 Month 5: Production & Open Source</h2>
+        <div class="month-progress-badge" id="month-5-badge">0% Complete</div>
+      </div>
+      <ul>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="5" id="task-5-1">
+          <div class="task-content">
+            Build and launch your SaaS (auth + <a href="https://stripe.com/docs" target="_blank" style="color: var(--highlight);">Stripe</a>) <span class="tag">Big Project</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="5" id="task-5-2">
+          <div class="task-content">
+            Comprehensive <a href="https://istanbul.js.org/" target="_blank" style="color: var(--highlight);">test coverage</a> <span class="tag testing">Testing</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="5" id="task-5-3">
+          <div class="task-content">
+            <a href="https://opensource.guide/how-to-contribute/" target="_blank" style="color: var(--highlight);">Open-source contribution</a> or case study
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="5" id="task-5-4">
+          <div class="task-content">
+            <a href="https://cheatsheetseries.owasp.org/cheatsheets/Web_Application_Security_Testing_Cheat_Sheet.html" target="_blank" style="color: var(--highlight);">Security audit</a> of your projects <span class="tag security">Security</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="5" id="task-5-5">
+          <div class="task-content">
+            Refresh <a href="https://www.linkedin.com/" target="_blank" style="color: var(--highlight);">LinkedIn</a>, <a href="https://github.com/" target="_blank" style="color: var(--highlight);">GitHub</a>, and portfolio
+          </div>
+        </li>
+      </ul>
+      <div class="notes-section">
+        <h4 style="color: var(--highlight); margin-top: 0;">📝 Month 5 Reflection</h4>
+        <textarea class="notes-textarea" placeholder="How did Month 5 go? What surprised you? What was challenging? Key takeaways..." data-month="5"></textarea>
+      </div>
+    </div>
+
+    <div class="month-section">
+      <div class="month-header">
+        <h2 style="margin: 0; border: none; padding: 0;">🎯 Month 6: Advanced Systems & AI</h2>
+        <div class="month-progress-badge" id="month-6-badge">0% Complete</div>
+      </div>
+      <ul>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="6" id="task-6-1">
+          <div class="task-content">
+            <a href="https://microservices.io/" target="_blank" style="color: var(--highlight);">Microservices architecture</a> <span class="tag systems">Systems</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="6" id="task-6-2">
+          <div class="task-content">
+            <a href="https://aws.amazon.com/what-is/database-sharding/" target="_blank" style="color: var(--highlight);">Database sharding</a> and <a href="https://aws.amazon.com/rds/features/read-replicas/" target="_blank" style="color: var(--highlight);">replication</a> <span class="tag systems">Systems</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="6" id="task-6-3">
+          <div class="task-content">
+            Build a <a href="https://developers.google.com/machine-learning/recommendation" target="_blank" style="color: var(--highlight);">recommendation system</a> <span class="tag ml">ML</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="6" id="task-6-4">
+          <div class="task-content">
+            Implement <a href="https://blog.logrocket.com/rate-limiting-node-js/" target="_blank" style="color: var(--highlight);">rate limiting</a> and abuse protection <span class="tag security">Security</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="task-checkbox" data-month="6" id="task-6-5">
+          <div class="task-content">
+            Create <a href="https://dev.to/" target="_blank" style="color: var(--highlight);">technical blog posts</a> or case studies
+          </div>
+        </li>
+      </ul>
+      <div class="notes-section">
+        <h4 style="color: var(--highlight); margin-top: 0;">📝 Month 6 Reflection</h4>
+        <textarea class="notes-textarea" placeholder="How did Month 6 go? What surprised you? What was challenging? Key takeaways..." data-month="6"></textarea>
+      </div>
+    </div>
+
+    <footer>
+      💻✨ Made with strategic thinking, systems knowledge, and engineering excellence by Sabrina. <br/>
+      "Stay curious, caffeinated, and strategically dangerous."
+    </footer>
+  </div>
+
+  <script>
+    // Progress tracking system
+    class ProgressTracker {
+      constructor() {
+        this.data = this.loadData();
+        this.initEventListeners();
+        this.updateUI();
+      }
+
+      loadData() {
+        const saved = localStorage.getItem('roadmapProgress');
+        return saved ? JSON.parse(saved) : { tasks: {}, notes: {}, pillarNotes: {} };
+      }
+      saveData() {
+        localStorage.setItem('roadmapProgress', JSON.stringify(this.data));
+      }
+      initEventListeners() {
+        // Task checkboxes
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+          checkbox.addEventListener('change', (e) => {
+            const taskId = e.target.id;
+            const month = e.target.dataset.month;
+            this.data.tasks[taskId] = e.target.checked;
+            this.updateTaskAppearance(e.target);
+            this.updateMonthProgress(month);
+            this.updateOverallProgress();
+            this.saveData();
+          });
+        });
+
+        // Note textareas
+        document.querySelectorAll('.notes-textarea').forEach(textarea => {
+          textarea.addEventListener('input', (e) => {
+            const key = e.target.dataset.month || e.target.dataset.pillar;
+            const type = e.target.dataset.month ? 'notes' : 'pillarNotes';
+            this.data[type][key] = e.target.value;
+            this.saveData();
+          });
+        });
+      }
+
+      updateTaskAppearance(checkbox) {
+        const taskContent = checkbox.nextElementSibling;
+        if (checkbox.checked) {
+          taskContent.classList.add('completed');
+        } else {
+          taskContent.classList.remove('completed');
+        }
+      }
+
+      updateMonthProgress(month) {
+        const monthCheckboxes = document.querySelectorAll(`[data-month="${month}"]`);
+        const completedTasks = Array.from(monthCheckboxes).filter(cb => cb.checked).length;
+        const totalTasks = monthCheckboxes.length;
+        const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        // Update progress bar
+        const progressBar = document.getElementById(`progress-month-${month}`);
+        if (progressBar) {
+          progressBar.style.width = `${percentage}%`;
+        }
+        
+        // Update badge
+        const badge = document.getElementById(`month-${month}-badge`);
+        if (badge) {
+          badge.textContent = `${percentage}% Complete`;
+        }
+      }
+
+      updateOverallProgress() {
+        const allCheckboxes = document.querySelectorAll('.task-checkbox');
+        const completedTasks = Array.from(allCheckboxes).filter(cb => cb.checked).length;
+        const totalTasks = allCheckboxes.length;
+        const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        // Update dashboard stats
+        document.getElementById('totalTasks').textContent = totalTasks;
+        document.getElementById('completedTasks').textContent = completedTasks;
+        document.getElementById('overallProgress').textContent = `${percentage}%`;
+        
+        // Update current month focus
+        const currentMonth = this.getCurrentMonth();
+        document.getElementById('currentMonth').textContent = `Month ${currentMonth}`;
+      }
+
+      getCurrentMonth() {
+        // Simple logic to determine current month based on progress
+        for (let month = 1; month <= 6; month++) {
+          const monthCheckboxes = document.querySelectorAll(`[data-month="${month}"]`);
+          const completedTasks = Array.from(monthCheckboxes).filter(cb => cb.checked).length;
+          const totalTasks = monthCheckboxes.length;
+          
+          if (completedTasks < totalTasks) {
+            return month;
+          }
+        }
+        return 6; // All months completed
+      }
+
+      updateUI() {
+        // Restore checkbox states
+        Object.keys(this.data.tasks).forEach(taskId => {
+          const checkbox = document.getElementById(taskId);
+          if (checkbox) {
+            checkbox.checked = this.data.tasks[taskId];
+            this.updateTaskAppearance(checkbox);
+          }
+        });
+
+        // Restore notes
+        Object.keys(this.data.notes).forEach(month => {
+          const textarea = document.querySelector(`[data-month="${month}"]`);
+          if (textarea && textarea.tagName === 'TEXTAREA') {
+            textarea.value = this.data.notes[month];
+          }
+        });
+
+        Object.keys(this.data.pillarNotes).forEach(pillar => {
+          const textarea = document.querySelector(`[data-pillar="${pillar}"]`);
+          if (textarea) {
+            textarea.value = this.data.pillarNotes[pillar];
+          }
+        });
+
+        // Update all progress indicators
+        for (let month = 1; month <= 6; month++) {
+          this.updateMonthProgress(month);
+        }
+        this.updateOverallProgress();
+      }
+    }
+
+    // Export to PDF function
+    function exportToPDF() {
+      // Create a simple text version for export
+      const content = document.querySelector('.container').cloneNode(true);
+      
+      // Remove interactive elements for PDF
+      content.querySelectorAll('.export-section, .notes-section').forEach(el => el.remove());
+      content.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        const isChecked = el.checked;
+        const checkmark = isChecked ? '✅' : '☐';
+        el.outerHTML = `<span style="color: var(--check); margin-right: 10px;">${checkmark}</span>`;
+      });
+      
+      // Simple PDF export simulation
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Sabrina's Learning Roadmap - Progress Report</title>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+              .container { max-width: 800px; margin: 0 auto; }
+              h1, h2 { color: #8b0000; }
+              .completed { text-decoration: line-through; color: #98c379; }
+              .tag { background: #e06c75; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+            </style>
+          </head>
+          <body>
+            ${content.innerHTML}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+  </script>
+</body>
+</html>
